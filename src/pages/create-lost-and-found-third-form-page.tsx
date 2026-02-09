@@ -17,13 +17,7 @@ import { db } from '../lib/firestore';
 import { useSearchParams, useRouter } from 'next/navigation';
 import ScreenTitle from '../components/molecules/screen-title';
 import Button from '../components/atoms/button';
-
-function transformLocationLonLatForm(location: number[]): string {
-  // transform the array into a string and remove the blank spaces.
-  const locationArray = location.toString().trim();
-  // separes the lat/lon string by removing the comma, reverse the strings to lon/lat form and transform it into a string.
-  return locationArray.split(/,+/).toReversed().toString();
-}
+import transformLocationLonLat from '../utils/transform-location';
 
 export default function CreateLostAndFoundThirdFormPage() {
   const locationRef = useRef<HTMLDivElement>(null);
@@ -105,7 +99,7 @@ export default function CreateLostAndFoundThirdFormPage() {
   const handleNextStep = async () => {
     if (document) {
       await updateDoc(doc(db, 'lost_and_found', document), {
-        location: transformLocationLonLatForm(location),
+        location: transformLocationLonLat(location),
       }).finally(() => {
         Router.push('/');
       });

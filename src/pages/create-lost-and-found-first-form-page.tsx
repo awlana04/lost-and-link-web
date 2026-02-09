@@ -89,16 +89,12 @@ export default function CreateLostAndFoundFirstFormPage() {
       await addDoc(collection(db, 'lost_and_found'), {
         name: data.name,
         location: '',
-        members: [
-          {
-            user_name: user.name,
-            user_email: user.email,
-            user_phone_number: '',
-            user_registration_code: '',
-            is_admin: true,
-            user_id: user.id,
-          },
-        ],
+        user_name: [user.name],
+        user_email: [user.email],
+        user_phone_number: [''],
+        user_registration_code: [''],
+        is_admin: [user.id],
+        user_id: [user.id],
       }).then((document) => {
         jsonData!.users.map((item, index) => {
           if (item.user_name) {

@@ -37,14 +37,10 @@ export default function CreateLostAndFoundSecondFormPage() {
     if (document) {
       usersArray.map(async (item) => {
         await updateDoc(doc(db, 'lost_and_found', document), {
-          members: arrayUnion({
-            user_name: item.user_name,
-            user_email: item.user_email,
-            user_phone_number: item.user_phone_number,
-            user_registration_code: item.user_registration_code,
-            is_admin: false,
-            user_id: '',
-          }),
+          user_name: arrayUnion(item.user_name),
+          user_email: arrayUnion(item.user_email),
+          user_phone_number: arrayUnion(item.user_phone_number),
+          user_registration_code: arrayUnion(item.user_registration_code),
         }).finally(() => {
           Router.push(`/create-lost-and-found/third-form?document=${document}`);
         });
