@@ -20,10 +20,10 @@ import Button from '../components/atoms/button';
 import transformLocationLonLat from '../utils/transform-location';
 
 export default function CreateLostAndFoundThirdFormPage() {
-  const locationRef = useRef<HTMLDivElement>(null);
+  const locationRef = useRef<HTMLDivElement | any>(null);
 
   const [location, setLocation] = useState<number[]>([]);
-  const [pinLocation, setPinLocation] = useState();
+  const [pinLocation, setPinLocation] = useState<any>();
 
   useEffect(() => {
     if ('geolocation' in navigator) {

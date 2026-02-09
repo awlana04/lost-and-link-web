@@ -35,7 +35,7 @@ export default function CreateLostAndFoundSecondFormPage() {
 
   const handleNextStep = async () => {
     if (document) {
-      usersArray.map(async (item) => {
+      usersArray.map(async (item: any) => {
         await updateDoc(doc(db, 'lost_and_found', document), {
           user_name: arrayUnion(item.user_name),
           user_email: arrayUnion(item.user_email),
@@ -53,7 +53,7 @@ export default function CreateLostAndFoundSecondFormPage() {
       <ScreenTitle title='Confirmar integrantes' />
 
       <div className='mt-8'>
-        {usersArray.map((item) => (
+        {usersArray.map((item: any) => (
           <UserCard
             key={item.user_name}
             userName={item.user_name}

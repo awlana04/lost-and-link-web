@@ -13,7 +13,7 @@ import { db } from '../lib/firestore';
 export default function ViewItemPage() {
   const searchParams = useSearchParams();
 
-  const [item, setItem] = useState();
+  const [item, setItem] = useState<any>();
 
   const itemId = searchParams?.get('item');
 

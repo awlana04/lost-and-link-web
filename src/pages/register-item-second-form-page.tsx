@@ -28,8 +28,8 @@ import Icon from 'ol/style/Icon';
 import transformLocationLonLat from '../utils/transform-location';
 
 export default function RegisterItemSecondFormPage() {
-  const [lostAndFound, setLostAndFound] = useState([]);
-  const [lostAndFoundSelected, setLostAndFoundSelected] = useState('');
+  const [lostAndFound, setLostAndFound] = useState<any>([]);
+  const [lostAndFoundSelected, setLostAndFoundSelected] = useState<any>('');
 
   const searchParams = useSearchParams();
   const Router = useRouter();
@@ -39,7 +39,7 @@ export default function RegisterItemSecondFormPage() {
   const locationRef = useRef<HTMLDivElement>(null);
 
   const [location, setLocation] = useState<number[]>([]);
-  const [pinLocation, setPinLocation] = useState();
+  const [pinLocation, setPinLocation] = useState<any>();
 
   useEffect(() => {
     if ('geolocation' in navigator) {
@@ -160,12 +160,12 @@ export default function RegisterItemSecondFormPage() {
 
   return (
     <div className='flex flex-col'>
-      {lostAndFound.map((item) => (
+      {lostAndFound.map((item: any) => (
         <button
           key={item.name}
           onClick={() => setLostAndFoundSelected(item.location)}
         >
-          <Card title={item.name} description='' />
+          <Card title={item.name} description='' imageUrl='' />
         </button>
       ))}
 

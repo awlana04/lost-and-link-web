@@ -14,8 +14,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 export default function HomePage() {
-  const [lostAndFound, setLostAndFound] = useState([]);
-  const [items, setItems] = useState([]);
+  const [lostAndFound, setLostAndFound] = useState<any>([]);
+  const [items, setItems] = useState<any>([]);
   const user = JSON.parse(getCookie('@lost-and-link:user')!);
 
   const getLostAndFound = async () => {
@@ -30,14 +30,14 @@ export default function HomePage() {
         ...doc.data(),
       }));
 
-      data.map((item) => {
+      data.map((item: any) => {
         setLostAndFound([...lostAndFound, item]);
       });
     });
   };
 
   const getItems = async () => {
-    lostAndFound.map(async (place) => {
+    lostAndFound.map(async (place: any) => {
       console.log(place.location, place);
 
       await getDocs(
@@ -47,7 +47,7 @@ export default function HomePage() {
           limit(5)
         )
       ).then((querySnapshot) => {
-        const data = querySnapshot.docs.map((doc) => ({
+        const data = querySnapshot.docs.map((doc: any) => ({
           ...doc.data(),
         }));
 
@@ -85,7 +85,7 @@ export default function HomePage() {
 
       {lostAndFound &&
         !items &&
-        lostAndFound.map((item) => (
+        lostAndFound.map((item: any) => (
           <div key={item.name}>
             <SectionTitle
               color='darkGreen'
@@ -99,7 +99,7 @@ export default function HomePage() {
         ))}
 
       {items &&
-        items.map((item) => (
+        items.map((item: any) => (
           <Link href={`/view-item?item=${item.user_id}`}>
             <Card
               title={item.name}

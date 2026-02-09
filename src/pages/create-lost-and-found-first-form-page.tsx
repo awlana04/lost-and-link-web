@@ -23,15 +23,15 @@ const schema = z.object({
 export default function CreateLostAndFoundFirstFormPage() {
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const [jsonData, setJsonData] = useState(null);
-  const [error, setError] = useState(null);
+  const [jsonData, setJsonData] = useState<any>(null);
+  const [error, setError] = useState<any>(null);
 
-  const handleFileChange = (event) => {
+  const handleFileChange = (event: any) => {
     const file = event.target.files[0];
     if (file && file.type === 'application/json') {
       const reader = new FileReader();
 
-      reader.onload = (e) => {
+      reader.onload = (e: any) => {
         try {
           const content = e.target.result;
           const parsedData = JSON.parse(content);
@@ -96,7 +96,7 @@ export default function CreateLostAndFoundFirstFormPage() {
         is_admin: [user.id],
         user_id: [user.id],
       }).then((document) => {
-        jsonData!.users.map((item, index) => {
+        jsonData!.users.map((item: any, index: number) => {
           if (item.user_name) {
             if (index === 0) {
               usersArray = `name=${item.user_name.replace(' ', '_')}`;
