@@ -108,7 +108,7 @@ export default function RegisterItemSecondFormPage() {
     });
 
     return () => {
-      map.setTarget(null);
+      map.setTarget(undefined);
     };
   }, [location]);
 
@@ -165,7 +165,7 @@ export default function RegisterItemSecondFormPage() {
           key={item.name}
           onClick={() => setLostAndFoundSelected(item.location)}
         >
-          <Card title={item.name} description='' imageUrl='' />
+          <Card title={item.name} description='' />
         </button>
       ))}
 

@@ -87,7 +87,7 @@ export default function CreateLostAndFoundThirdFormPage() {
     });
 
     return () => {
-      map.setTarget(null);
+      map.setTarget(undefined);
     };
   }, [location]);
 
