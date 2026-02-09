@@ -28,6 +28,7 @@ export default function CreateLostAndFoundFirstFormPage() {
 
   const handleFileChange = (event: any) => {
     const file = event.target.files[0];
+
     if (file && file.type === 'application/json') {
       const reader = new FileReader();
 
