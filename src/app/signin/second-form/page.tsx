@@ -1,3 +1,5 @@
+import CreateAccountSecondFormPage from '@/src/pages/create-account-second-form-page';
+
 export default function CreateAccountSecondForm() {
-  return <p>Welcome to Second Form</p>;
+  return <CreateAccountSecondFormPage />;
 }

@@ -6,16 +6,18 @@ type CardType = {
 
 export default function Card(props: CardType) {
   return (
-    <div className='w-96 h-24 rounded-2xl flex flex-row items-center bg-lightGreen pr-4 m-2'>
-      {/* <div className='w-24 h-24 rounded-2xl bg-darkGreen' /> */}
+    <div className='w-xl h-32 rounded-2xl flex flex-row items-center bg-lightGreen my-4'>
       {props.imageUrl && (
-        <img src={props.imageUrl} className='w-24 h-24 rounded-2xl' />
+        <img src={props.imageUrl} className='w-32 h-32 rounded-2xl' />
       )}
-      <div className='flex flex-col my-2 ml-4'>
-        <p className='text-darkGreen text-x'>{props.title}</p>
-        <p className='text-black w-64 text-lg'>
-          {props.description.length > 48
-            ? props.description.substring(0, 48) + '...'
+
+      <div className='flex flex-col my-2 ml-10'>
+        <p className='text-darkGreen text-xl font-sans font-bold'>
+          {props.title}
+        </p>
+        <p className='text-black w-64 text-lg font-sans'>
+          {props.description.length > 64
+            ? props.description.substring(0, 64) + '...'
             : props.description}
         </p>
       </div>

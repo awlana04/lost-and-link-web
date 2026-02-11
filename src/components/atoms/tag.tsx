@@ -12,8 +12,8 @@ type TagPropsType = {
 
 export default function Tag(props: TagPropsType) {
   return (
-    <div className='h-8 w-36 rounded-2xl bg-lightGreen my-4 items-center justify-center'>
-      <p className='text-base text-darkGreen'>
+    <div className='h-8 w-36 rounded-2xl bg-darkGreen my-4 items-center justify-center'>
+      <p className='text-base text-white'>
         {(props.type === 'book' && 'Livro') ||
           (props.type === 'backpack' && 'Mochila') ||
           (props.type === 'pencilCase' && 'Estojo') ||

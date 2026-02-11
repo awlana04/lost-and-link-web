@@ -49,7 +49,7 @@ export default function CreateLostAndFoundSecondFormPage() {
   };
 
   return (
-    <div className='justify-center items-center pb-44'>
+    <div className='justify-center flex flex-col items-center pb-44'>
       <ScreenTitle title='Confirmar integrantes' />
 
       <div className='mt-8'>

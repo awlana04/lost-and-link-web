@@ -5,6 +5,11 @@
   --color-darkGreen: #3ddb8f;
 }
 
+@theme inline {
+  --font-mono: var(--font-rakkas);
+  --font-sans: var(--font-scope-one);
+}
+
 body {
   width: 100vw;
   height: 100vh;

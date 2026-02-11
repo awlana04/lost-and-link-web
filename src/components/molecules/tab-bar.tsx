@@ -9,20 +9,17 @@ type TabBarPropsType = {
 
 export default function TabBar(props: TabBarPropsType) {
   return (
-    <div>
-      <Link href='/'>
-        <div className='w-2xl rounded-t-2xl h-32 pb-10 bg-lightGreen flex items-center justify-center flex-row gap-32'>
-          <Icon
-            color={props.pageName === 'home' ? 'green' : 'black'}
-            size='large'
-            icon={FiSearch}
-          />
-        </div>
+    <div className='flex flex-row w-3xl bg-lightGreen h-44 rounded-t-2xl gap-28 pt-10 justify-center fixed bottom-0'>
+      <Link href='/dashboard'>
+        <Icon
+          color={props.pageName === 'home' ? 'green' : 'black'}
+          size='large'
+          icon={FiSearch}
+        />
       </Link>
 
-      <Link href='/register-item'>
-        {' '}
-        <div className='rounded-2xl w-16 h-16 flex items-center justify-center absolute -top-5 bg-darkGreen'>
+      <Link href='/register-item/first-form'>
+        <div className='rounded-2xl w-24 h-24 flex items-center justify-center relative -top-20 bg-darkGreen'>
           <Icon
             color={props.pageName === 'home' ? 'white' : 'black'}
             size='large'

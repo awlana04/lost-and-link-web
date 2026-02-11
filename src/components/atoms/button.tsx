@@ -9,7 +9,7 @@ export default function Button(props: ButtonPropsType) {
       {...props}
       className={`w-72 h-16 rounded-2xl justify-center items-center bg-darkGreen ${props.disabled && 'opacity-50'} hover:cursor-pointer`}
     >
-      <p className='text-black text-lg'>{props.text}</p>
+      <p className='text-black text-lg font-sans'>{props.text}</p>
     </button>
   );
 }

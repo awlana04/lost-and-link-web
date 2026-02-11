@@ -32,13 +32,13 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm({ resolver: zodResolver(schema) });
 
+  console.log(errors.password);
+
   const handleNextStep = async (data: any) => {
     const auth = getAuth(app);
 
     await signInWithEmailAndPassword(auth, data.email, data.password).then(
       async (e) => {
-        console.log(e.user.uid);
-
         const user = {
           id: e.user.uid,
           name: e.user.displayName,
@@ -52,7 +52,7 @@ export default function LoginPage() {
             document.cookie = `@lost-and-link:user=${JSON.stringify(user)}`;
           })
           .finally(() => {
-            router.push('/');
+            router.push('/dashboard');
           });
       }
     );
@@ -64,7 +64,7 @@ export default function LoginPage() {
 
       <form
         onSubmit={handleSubmit(handleNextStep)}
-        className='flex items-center justify-center mt-10 flex-col gap-10'
+        className='flex items-center justify-center mt-20 flex-col gap-10'
       >
         <div className='flex flex-col'>
           <Label labelName='E-mail:' icon={FiMail} />
@@ -72,7 +72,7 @@ export default function LoginPage() {
             placeholder='Ex.: jane@doe.com'
             type='text'
             {...register('email')}
-            className='border-2 rounded-2xl w-96 h-16 px-6 bg-lightGreen border-none data-[errored=true]:border-red-500 data-[errored=true]:text-red-500 data-[errored=true]:outline'
+            className='border-2 rounded-2xl w-96 font-sans h-16 px-6 bg-lightGreen border-none data-[errored=true]:border-red-500 data-[errored=true]:text-red-500 data-[errored=true]:outline'
           />
 
           {errors.email && (
@@ -88,7 +88,7 @@ export default function LoginPage() {
             placeholder='Ex.: 12345678 '
             type='password'
             {...register('password')}
-            className='border-2 rounded-2xl w-96 h-16 px-6 bg-lightGreen border-none data-[errored=true]:border-red-500 data-[errored=true]:text-red-500 data-[errored=true]:outline'
+            className='border-2 rounded-2xl w-96 h-16 px-6 font-sans bg-lightGreen border-none data-[errored=true]:border-red-500 data-[errored=true]:text-red-500 data-[errored=true]:outline'
           />
 
           {errors.password && (
@@ -99,7 +99,13 @@ export default function LoginPage() {
         </div>
 
         <div className='justify-center items-center flex mt-4'>
-          <Button text='Entrar' type='submit' />
+          <Button
+            text='Entrar'
+            type='submit'
+            disabled={
+              errors.email !== undefined || errors.password !== undefined
+            }
+          />
         </div>
       </form>
     </div>

@@ -83,7 +83,7 @@ export default function RegisterItemFirstFormPage() {
   };
 
   return (
-    <div className='mb-8'>
+    <div className='mb-8 flex flex-col justify-center m-auto w-4xl'>
       <div className='mt-12'>
         <RadioButton
           falseRadioButtonText='Achei'
@@ -100,7 +100,7 @@ export default function RegisterItemFirstFormPage() {
         text='Tipo de Item'
       />
 
-      <div className='items-center my-2 mb-4'>
+      <div className='items-center my-2 mb-4 justify-center flex'>
         {objectSelected && (
           <div className='bg-lightGreen w-48 h-16 p-2 items-center rounded-2xl flex-row pl-4 mb-4'>
             <Icon color='black' icon={FiCheck} size='small' />
@@ -243,7 +243,7 @@ export default function RegisterItemFirstFormPage() {
       />
 
       <form onSubmit={handleSubmit(handleNextStep)}>
-        <div className='items-center my-2 mb-4'>
+        <div className='items-center my-2 mb-4 flex justify-center'>
           <textarea
             placeholder='Comente aqui.'
             className='w-96 h-24 border rounded-2xl align-top border-darkGreen text-black px-4'
@@ -257,14 +257,16 @@ export default function RegisterItemFirstFormPage() {
           icon={FiImage}
           text='Fotos'
         />
-        <div className='items-center my-2 mb-4'>
-          <input
+        <div className='items-center my-2 mb-4 flex justify-center'>
+          {/* <input
             type='file'
             onChange={handleChange}
             className='w-20 h-20 rounded-2xl bg-lightGreen justify-center items-center'
-          />
+          /> */}
 
-          <Icon color='green' size='large' icon={FiPlus} />
+          <div className='w-20 h-20 rounded-2xl bg-lightGreen justify-center items-center flex'>
+            <Icon color='green' size='large' icon={FiPlus} />
+          </div>
         </div>
         {/* <SectionTitle
         iconDirection='left'
@@ -279,7 +281,7 @@ export default function RegisterItemFirstFormPage() {
           ? 'Onde você perdeu o item?'
           : 'Onde você encontrou o item?'}
       </p> */}
-        <div className='items-center my-4 mb-8'>
+        <div className='items-center my-4 mb-8 flex justify-center mt-16'>
           <Button
             text={isFoundSelected ? 'Confirmar Perda' : 'Confirmar Achado'}
           />

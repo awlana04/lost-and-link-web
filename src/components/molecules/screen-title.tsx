@@ -9,9 +9,9 @@ type ScreenTitlePropsType = {
 
 export default function ScreenTitle(props: ScreenTitlePropsType) {
   return (
-    <div className='w-full h-32 rounded-b-2xl bg-darkGreen px-16 pb-8 flex items-center'>
-      <div className='mt-10 flex flex-row items-center justify-between'>
-        <p className='text-3xl ml-6 text-black'>{props.title}</p>
+    <div className='w-11/12 m-auto h-44 rounded-b-2xl bg-darkGreen px-16 pb-8 flex items-center'>
+      <div className='mt-20 flex flex-row items-center justify-between'>
+        <p className='text-5xl ml-6 text-black font-mono'>{props.title}</p>
 
         {props.hasIcon && (
           <button>

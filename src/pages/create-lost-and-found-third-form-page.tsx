@@ -35,7 +35,7 @@ export default function CreateLostAndFoundThirdFormPage() {
         }
       });
     }
-    console.log(location);
+
     if (!locationRef.current) return;
 
     const map = new Map({
@@ -55,25 +55,16 @@ export default function CreateLostAndFoundThirdFormPage() {
       source: new SourceVector(),
       style: new Style({
         image: new Icon({
-          anchor: [0.5, 1],
-          src: 'https://openlayers.org/en/latest/examples/data/icon.png',
-          // src: `${process.env.NEXT_PUBLIC_FRONTEND_URI}/map_pin.svg`,
-          // anchor: [0.5, 0.95],
-          // anchorXUnits: 'fraction',
-          // anchorYUnits: 'fraction',
-          // width: 56,
+          src: `${process.env.NEXT_PUBLIC_FRONTEND_URI}/map-pin.png`,
+          anchor: [0.5, 0.95],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'fraction',
+          width: 64,
         }),
       }),
     });
 
     map.addLayer(layer);
-
-    // if (defaultLocation) {
-    //   const pin = transform(defaultLocation, 'EPSG:4326', 'EPSG:3857');
-
-    //   layer.getSource()?.clear();
-    //   layer.getSource()?.addFeature(new Feature(new Point(pin)));
-    // }
 
     map.on('click', (event) => {
       layer.getSource()?.clear();

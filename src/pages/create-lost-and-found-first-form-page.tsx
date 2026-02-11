@@ -160,10 +160,10 @@ export default function CreateLostAndFoundFirstFormPage() {
           <div>
             <p className='my-4 ml-10'>Upload de lista de membros</p>
 
-            <input type='file' ref={fileRef} onChange={handleFileChange} />
+            {/* <input type='file' ref={fileRef} onChange={handleFileChange} /> */}
 
             <div className='justify-center items-center'>
-              <div className='w-80 h-36 rounded-2xl border-darkGreen border-2 items-center justify-center'>
+              <div className='w-80 h-36 rounded-2xl flex border-darkGreen border-2 items-center justify-center'>
                 <Icon color='green' icon={FiPlus} size='large' />
               </div>
             </div>

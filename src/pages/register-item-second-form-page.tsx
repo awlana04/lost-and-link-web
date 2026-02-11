@@ -26,6 +26,7 @@ import { Point } from 'ol/geom';
 import Style from 'ol/style/Style';
 import Icon from 'ol/style/Icon';
 import transformLocationLonLat from '../utils/transform-location';
+import ScreenTitle from '../components/molecules/screen-title';
 
 export default function RegisterItemSecondFormPage() {
   const [lostAndFound, setLostAndFound] = useState<any>([]);
@@ -51,7 +52,7 @@ export default function RegisterItemSecondFormPage() {
         }
       });
     }
-    console.log(location);
+
     if (!locationRef.current) return;
 
     const map = new Map({
@@ -63,11 +64,6 @@ export default function RegisterItemSecondFormPage() {
       ],
       view: new View({
         center: fromLonLat(location),
-        // center: transform(
-        //   fromLonLat(lostAndFoundSelected.split(',').map(Number)),
-        //   'EPSG:3857',
-        //   'EPSG:4326'
-        // ),
         zoom: 16,
       }),
     });
@@ -76,25 +72,16 @@ export default function RegisterItemSecondFormPage() {
       source: new SourceVector(),
       style: new Style({
         image: new Icon({
-          anchor: [0.5, 1],
-          src: 'https://openlayers.org/en/latest/examples/data/icon.png',
-          // src: `${process.env.NEXT_PUBLIC_FRONTEND_URI}/map_pin.svg`,
-          // anchor: [0.5, 0.95],
-          // anchorXUnits: 'fraction',
-          // anchorYUnits: 'fraction',
-          // width: 56,
+          src: `${process.env.NEXT_PUBLIC_FRONTEND_URI}/map-pin.png`,
+          anchor: [0.5, 0.95],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'fraction',
+          width: 64,
         }),
       }),
     });
 
     map.addLayer(layer);
-
-    // if (defaultLocation) {
-    //   const pin = transform(defaultLocation, 'EPSG:4326', 'EPSG:3857');
-
-    //   layer.getSource()?.clear();
-    //   layer.getSource()?.addFeature(new Feature(new Point(pin)));
-    // }
 
     map.on('click', (event) => {
       layer.getSource()?.clear();
@@ -140,13 +127,6 @@ export default function RegisterItemSecondFormPage() {
     getLostAndFound();
   }, []);
 
-  // console.log(
-  //   lostAndFound,
-  //   lostAndFoundSelected,
-  //   location,
-  //   lostAndFoundSelected.split(',').map(Number)
-  // );
-
   const handleNextStep = async () => {
     if (document && pinLocation) {
       await updateDoc(doc(db, 'register_item', document), {
@@ -159,23 +139,32 @@ export default function RegisterItemSecondFormPage() {
   };
 
   return (
-    <div className='flex flex-col'>
-      {lostAndFound.map((item: any) => (
-        <button
-          key={item.name}
-          onClick={() => setLostAndFoundSelected(item.location)}
-        >
-          <Card title={item.name} description='' />
-        </button>
-      ))}
+    <div className='flex flex-col justify-center items-center'>
+      <ScreenTitle title='Selecione o Achados e Perdidos e Onde Encontrou o Item' />
+
+      <div className='mt-16'>
+        {lostAndFound.map((item: any) => (
+          <button
+            key={item.name}
+            onClick={() => setLostAndFoundSelected(item.location)}
+          >
+            <Card title={item.name} description='' />
+          </button>
+        ))}
+      </div>
 
       <div className='flex justify-center items-center mt-12'>
         <div ref={locationRef} className='w-3xl h-96' />
       </div>
 
-      {lostAndFoundSelected && (
-        <Button text='Confirmar Achados e Perdidos' onClick={handleNextStep} />
-      )}
+      <div className='mt-16'>
+        {lostAndFoundSelected && (
+          <Button
+            text='Confirmar Achados e Perdidos'
+            onClick={handleNextStep}
+          />
+        )}
+      </div>
     </div>
   );
 }

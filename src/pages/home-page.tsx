@@ -8,14 +8,27 @@ import SearchBar from '../components/molecules/search-bar';
 import SectionTitle from '../components/molecules/section-title';
 import TabBar from '../components/molecules/tab-bar';
 import getCookie from '../utils/get-cookie';
-import { collection, getDocs, limit, query, where } from 'firebase/firestore';
+import {
+  collection,
+  getDocs,
+  limit,
+  onSnapshot,
+  query,
+  where,
+} from 'firebase/firestore';
 import { db } from '../lib/firestore';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { ItemsType } from '../types/items-type';
+import Notification from '../components/atoms/notification';
 
 export default function HomePage() {
   const [lostAndFound, setLostAndFound] = useState<any>([]);
-  const [items, setItems] = useState<any>([]);
+  const [items, setItems] = useState<ItemsType[]>([]);
+  const [receivedNotification, setReceivedNotification] = useState(false);
+
+  const foundItem = items && items.some((item) => item.item_found === true);
+
   const user = JSON.parse(getCookie('@lost-and-link:user')!);
 
   const getLostAndFound = async () => {
@@ -38,8 +51,6 @@ export default function HomePage() {
 
   const getItems = async () => {
     lostAndFound.map(async (place: any) => {
-      console.log(place.location, place);
-
       await getDocs(
         query(
           collection(db, 'register_item'),
@@ -60,9 +71,6 @@ export default function HomePage() {
 
   useEffect(() => {
     getLostAndFound();
-
-    // if (lostAndFound) {
-    // }
   }, []);
 
   useEffect(() => {
@@ -72,13 +80,22 @@ export default function HomePage() {
   }, [lostAndFound]);
 
   // useEffect(() => {
-  //   getItems();
+  //   const unsubscribe = onSnapshot(
+  //     query(collection(db, 'register_item'), where('request', '==', user.id)),
+  //     (querySnapshot) => {
+  //       setInterval(() => {
+  //         setReceivedNotification(true);
+  //       }, 5000);
+
+  //       setReceivedNotification(false);
+  //     }
+  //   );
+
+  //   return () => unsubscribe();
   // }, []);
 
-  // console.log(lostAndFound, items);
-
   return (
-    <section className='w-4xl place-self-center'>
+    <section className='w-4xl m-auto flex justify-center flex-col'>
       <div className='justify-center flex'>
         <SearchBar />
       </div>
@@ -98,59 +115,71 @@ export default function HomePage() {
           </div>
         ))}
 
-      {items &&
-        items.map((item: any) => (
-          <Link href={`/view-item?item=${item.user_id}`}>
-            <Card
-              title={item.name}
-              description={item.description}
-              imageUrl={item.image}
-            />
-          </Link>
-        ))}
-
-      {/* <SectionTitle
-        color='darkGreen'
-        icon={FiFrown}
-        iconDirection='left'
-        text='Perdidos'
-      /> */}
-
-      {/* <div className='items-center justify-center flex flex-col'>
-        <Card
-          title='Planta'
-          description='Perdi hoje após uma apresentação no ICB, ela precisa dos meus cuidados, por favor, alguém me ajuda!!'
+      {receivedNotification && (
+        <Notification
+          itemName={items.find((item) => item.request === user.id)!.name}
         />
-        <Card
-          title='Calculadora Científica'
-          description='Perdi hoje no Projeto Newton, sou de Telecom, alguém me ajuda, sério, essas integrais me matam ;('
-        />
+      )}
 
-        <LoadMore />
-      </div>
+      {foundItem !== undefined && foundItem === false && (
+        <>
+          <SectionTitle
+            color='darkGreen'
+            icon={FiFrown}
+            iconDirection='left'
+            text='Perdidos'
+          />
 
-      <SectionTitle
-        color='lightGreen'
-        icon={FiSmile}
-        iconDirection='left'
-        text='Achados'
-      />
-      <div className='items-center justify-center flex flex-col'>
-        <Card
-          title='Bolsa'
-          description='Encontrei na faculdade de Engenharia de Telecomunicações.'
-        />
-        <Card
-          title='Caderno'
-          description='Tava na sala Telecom 201, encontrei hoje.'
-        />
+          <div className='flex items-center justify-center'>
+            {items &&
+              items
+                .filter((item) => item.item_found === false)
+                .map((item: ItemsType) => (
+                  <Link
+                    href={`/view-item?item=${item.user_id}`}
+                    key={item.name}
+                  >
+                    <Card
+                      title={item.name}
+                      description={item.description}
+                      imageUrl={item.image}
+                    />
+                  </Link>
+                ))}
+          </div>
+        </>
+      )}
 
-        <LoadMore />
-      </div>
- */}
-      <div className='place-self-center fixed bottom-0'>
-        <TabBar pageName='home' />
-      </div>
+      {foundItem !== undefined && foundItem === true && (
+        <>
+          <SectionTitle
+            color='lightGreen'
+            icon={FiSmile}
+            iconDirection='left'
+            text='Achados'
+          />
+
+          <div className='flex items-center justify-center'>
+            {items &&
+              items
+                .filter((item) => item.item_found === true)
+                .map((item: ItemsType) => (
+                  <Link
+                    href={`/view-item?item=${item.user_id}`}
+                    key={item.name}
+                  >
+                    <Card
+                      title={item.name}
+                      description={item.description}
+                      imageUrl={item.image}
+                    />
+                  </Link>
+                ))}
+          </div>
+        </>
+      )}
+
+      <TabBar pageName='home' />
     </section>
   );
 }

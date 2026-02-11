@@ -7,9 +7,12 @@ type LabelPropsType = {
 
 export default function Label(props: LabelPropsType) {
   return (
-    <div className='flex flex-row gap-4 my-4 mt-2 ml-4'>
+    <div className='flex flex-row gap-4 my-6 mt-2 ml-4'>
       <Icon icon={props.icon} color='black' size='small' />
-      <p className='font-medium text-sm text-black'>{props.labelName}</p>
+
+      <p className='font-semibold text-xl text-black font-sans'>
+        {props.labelName}
+      </p>
     </div>
   );
 }
