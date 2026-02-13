@@ -16,7 +16,7 @@ import {
   FiPlus,
   FiX,
 } from 'react-icons/fi';
-import { z } from 'zod';
+import { url, z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -72,21 +72,21 @@ export default function RegisterItemFirstFormPage() {
           method: 'POST',
           body: dataFile,
         });
-        const signedUrl = await uploadRequest.json();
-
-        await addDoc(collection(db, 'register_item'), {
-          name: userData.name,
-          description: data.description,
-          image: signedUrl,
-          item_found: isFoundSelected,
-          item_type: objectSelected,
-          location: '',
-          user_id: userData.id,
-          lost_and_found_location: '',
-          title: data.title,
-          request: '',
-        }).then((document) => {
-          router.push(`/register-item/second-form?document=${document.id}`);
+        await uploadRequest.json().then(async (url) => {
+          await addDoc(collection(db, 'register_item'), {
+            name: userData.name,
+            description: data.description,
+            image: url,
+            item_found: isFoundSelected,
+            item_type: objectSelected,
+            location: '',
+            user_id: userData.id,
+            lost_and_found_location: '',
+            title: data.title,
+            request: '',
+          }).then((document) => {
+            router.push(`/register-item/second-form?document=${document.id}`);
+          });
         });
       }
     }

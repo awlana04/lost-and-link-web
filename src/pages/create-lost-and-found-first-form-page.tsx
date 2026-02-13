@@ -100,6 +100,8 @@ export default function CreateLostAndFoundFirstFormPage() {
 
     if (user) {
       const userData = JSON.parse(user);
+
+      console.log(image);
       if (image) {
         const dataFile = new FormData();
 
@@ -109,57 +111,63 @@ export default function CreateLostAndFoundFirstFormPage() {
           method: 'POST',
           body: dataFile,
         });
-        const signedUrl = await uploadRequest.json();
 
-        try {
-          await addDoc(collection(db, 'lost_and_found'), {
-            name: data.name,
-            location: '',
-            user_name: [userData.name],
-            user_email: [userData.email],
-            user_phone_number: [''],
-            user_registration_code: [''],
-            image: signedUrl,
-            is_admin: [userData.id],
-            user_id: [userData.id],
-          }).then((document) => {
-            jsonData!.users.map((item: any, index: number) => {
-              if (item.user_name) {
-                if (index === 0) {
-                  usersArray = `name=${item.user_name.replace(' ', '_')}`;
+        await uploadRequest.json().then(async (url) => {
+          try {
+            await addDoc(collection(db, 'lost_and_found'), {
+              name: data.name,
+              location: '',
+              user_name: [userData.name],
+              user_email: [userData.email],
+              user_phone_number: [''],
+              user_registration_code: [''],
+              image: url,
+              is_admin: [userData.id],
+              user_id: [userData.id],
+            }).then((document) => {
+              jsonData!.users.map((item: any, index: number) => {
+                if (item.user_name) {
+                  if (index === 0) {
+                    usersArray = `name=${item.user_name.replace(' ', '_')}`;
+                  } else {
+                    usersArray += `&name=${item.user_name.replace(' ', '_')}`;
+                  }
                 } else {
-                  usersArray += `&name=${item.user_name.replace(' ', '_')}`;
+                  // throw modal error
                 }
-              } else {
-                // throw modal error
-              }
 
-              if (item.user_email) {
-                usersArray += `&email=${item.user_email}`;
-              } else {
-                usersArray += '&email=';
-              }
+                if (item.user_email) {
+                  usersArray += `&email=${item.user_email}`;
+                } else {
+                  usersArray += '&email=';
+                }
 
-              if (item.user_phone_number) {
-                usersArray += `&phone_number=${item.user_phone_number}`;
-              } else {
-                usersArray += '&phone_number=';
-              }
+                if (item.user_phone_number) {
+                  usersArray += `&phone_number=${item.user_phone_number}`;
+                } else {
+                  usersArray += '&phone_number=';
+                }
 
-              if (item.user_registration_code) {
-                usersArray += `&registration_code=${item.user_registration_code}`;
-              } else {
-                usersArray += '&registration_code=';
-              }
+                if (item.user_registration_code) {
+                  usersArray += `&registration_code=${item.user_registration_code}`;
+                } else {
+                  usersArray += '&registration_code=';
+                }
 
-              router.push(
-                `/create-lost-and-found/second-form?${usersArray}&document=${document.id}`
-              );
+                console.log('Hello', document.id);
+                router.push(
+                  `/create-lost-and-found/second-form?${usersArray}&document=${document.id}`
+                );
+              });
             });
-          });
-        } catch (e) {
-          console.error('Error adding document: ', e);
-        }
+          } catch (e) {
+            console.error('Error adding document: ', e);
+          }
+        }); // try {
+
+        // } catch (e) {
+        //   console.error('Error adding document: ', e);
+        // }
       }
     }
   };
