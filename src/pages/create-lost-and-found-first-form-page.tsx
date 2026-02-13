@@ -96,69 +96,70 @@ export default function CreateLostAndFoundFirstFormPage() {
 
   const handleNextStep = async (data: any) => {
     // const user = JSON.parse(getCookie('@lost-and-link:user')!);
-    const user = JSON.parse(
-      getCookie('@lost-and-link:user') as unknown as string
-    );
+    const user = getCookie('@lost-and-link:user') as unknown as string;
 
-    if (image) {
-      const dataFile = new FormData();
+    if (user) {
+      const userData = JSON.parse(user);
+      if (image) {
+        const dataFile = new FormData();
 
-      dataFile.set('image', image);
+        dataFile.set('image', image);
 
-      const uploadRequest = await fetch('/api/files', {
-        method: 'POST',
-        body: dataFile,
-      });
-      const signedUrl = await uploadRequest.json();
-
-      try {
-        await addDoc(collection(db, 'lost_and_found'), {
-          name: data.name,
-          location: '',
-          user_name: [user.name],
-          user_email: [user.email],
-          user_phone_number: [''],
-          user_registration_code: [''],
-          image: signedUrl,
-          is_admin: [user.id],
-          user_id: [user.id],
-        }).then((document) => {
-          jsonData!.users.map((item: any, index: number) => {
-            if (item.user_name) {
-              if (index === 0) {
-                usersArray = `name=${item.user_name.replace(' ', '_')}`;
-              } else {
-                usersArray += `&name=${item.user_name.replace(' ', '_')}`;
-              }
-            } else {
-              // throw modal error
-            }
-
-            if (item.user_email) {
-              usersArray += `&email=${item.user_email}`;
-            } else {
-              usersArray += '&email=';
-            }
-
-            if (item.user_phone_number) {
-              usersArray += `&phone_number=${item.user_phone_number}`;
-            } else {
-              usersArray += '&phone_number=';
-            }
-
-            if (item.user_registration_code) {
-              usersArray += `&registration_code=${item.user_registration_code}`;
-            } else {
-              usersArray += '&registration_code=';
-            }
-
-            router.push(
-              `/create-lost-and-found/second-form?${usersArray}&document=${document.id}`
-            );
-          });
+        const uploadRequest = await fetch('/api/files', {
+          method: 'POST',
+          body: dataFile,
         });
-      } catch (e) {
-        console.error('Error adding document: ', e);
+        const signedUrl = await uploadRequest.json();
+
+        try {
+          await addDoc(collection(db, 'lost_and_found'), {
+            name: data.name,
+            location: '',
+            user_name: [userData.name],
+            user_email: [userData.email],
+            user_phone_number: [''],
+            user_registration_code: [''],
+            image: signedUrl,
+            is_admin: [userData.id],
+            user_id: [userData.id],
+          }).then((document) => {
+            jsonData!.users.map((item: any, index: number) => {
+              if (item.user_name) {
+                if (index === 0) {
+                  usersArray = `name=${item.user_name.replace(' ', '_')}`;
+                } else {
+                  usersArray += `&name=${item.user_name.replace(' ', '_')}`;
+                }
+              } else {
+                // throw modal error
+              }
+
+              if (item.user_email) {
+                usersArray += `&email=${item.user_email}`;
+              } else {
+                usersArray += '&email=';
+              }
+
+              if (item.user_phone_number) {
+                usersArray += `&phone_number=${item.user_phone_number}`;
+              } else {
+                usersArray += '&phone_number=';
+              }
+
+              if (item.user_registration_code) {
+                usersArray += `&registration_code=${item.user_registration_code}`;
+              } else {
+                usersArray += '&registration_code=';
+              }
+
+              router.push(
+                `/create-lost-and-found/second-form?${usersArray}&document=${document.id}`
+              );
+            });
+          });
+        } catch (e) {
+          console.error('Error adding document: ', e);
+        }
       }
     }
   };

@@ -59,35 +59,36 @@ export default function RegisterItemFirstFormPage() {
 
   const handleNextStep = async (data: any) => {
     // const user = JSON.parse(getCookie('@lost-and-link:user')!);
-    const user = JSON.parse(
-      getCookie('@lost-and-link:user') as unknown as string
-    );
+    const user = getCookie('@lost-and-link:user') as unknown as string;
 
-    if (image) {
-      const dataFile = new FormData();
+    if (user) {
+      const userData = JSON.parse(user);
+      if (image) {
+        const dataFile = new FormData();
 
-      dataFile.set('image', image);
+        dataFile.set('image', image);
 
-      const uploadRequest = await fetch('/api/files', {
-        method: 'POST',
-        body: dataFile,
-      });
-      const signedUrl = await uploadRequest.json();
+        const uploadRequest = await fetch('/api/files', {
+          method: 'POST',
+          body: dataFile,
+        });
+        const signedUrl = await uploadRequest.json();
 
-      await addDoc(collection(db, 'register_item'), {
-        name: user.name,
-        description: data.description,
-        image: signedUrl,
-        item_found: isFoundSelected,
-        item_type: objectSelected,
-        location: '',
-        user_id: user.id,
-        lost_and_found_location: '',
-        title: data.title,
-        request: '',
-      }).then((document) => {
-        router.push(`/register-item/second-form?document=${document.id}`);
-      });
+        await addDoc(collection(db, 'register_item'), {
+          name: userData.name,
+          description: data.description,
+          image: signedUrl,
+          item_found: isFoundSelected,
+          item_type: objectSelected,
+          location: '',
+          user_id: userData.id,
+          lost_and_found_location: '',
+          title: data.title,
+          request: '',
+        }).then((document) => {
+          router.push(`/register-item/second-form?document=${document.id}`);
+        });
+      }
     }
   };
 

@@ -43,9 +43,7 @@ export default function EnterLostAndFoundPage() {
   const [enterError, setEnterError] = useState(false);
 
   // const user = JSON.parse(getCookie('@lost-and-link:user')!);
-  const user = JSON.parse(
-    getCookie('@lost-and-link:user') as unknown as string
-  );
+  const user = getCookie('@lost-and-link:user') as unknown as any;
 
   const locationId = searchParams?.get('location');
 
@@ -56,61 +54,73 @@ export default function EnterLostAndFoundPage() {
   } = useForm();
 
   const getLostAndFound = async () => {
-    await getDocs(
-      query(
-        collection(db, 'lost_and_found'),
-        where('user_name', 'array-contains', user.name),
-        limit(1)
+    if (user) {
+      const userData = JSON.parse(user);
+
+      await getDocs(
+        query(
+          collection(db, 'lost_and_found'),
+          where('user_name', 'array-contains', userData.name),
+          limit(1)
+        )
       )
-    )
-      .then((querySnapshot) => {
-        const data = querySnapshot.docs.map((doc) => ({
-          ...doc.data(),
-        })) as unknown as LostAndFoundType[];
+        .then((querySnapshot) => {
+          const data = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+          })) as unknown as LostAndFoundType[];
 
-        console.log(data);
+          console.log(data);
 
-        data.map((item) => {
-          if (item.user_name.find((userName) => userName === user.name)) {
-            setName(item.user_name.find((userName) => userName === user.name)!);
+          data.map((item) => {
+            if (item.user_name.find((userName) => userName === userData.name)) {
+              setName(
+                item.user_name.find((userName) => userName === userData.name)!
+              );
 
-            if (
-              item.user_registration_code.find(
-                (userRegistrationCode) =>
-                  userRegistrationCode === user.registration_code
-              )
-            ) {
-              setRegistrationCode(
+              if (
                 item.user_registration_code.find(
                   (userRegistrationCode) =>
-                    userRegistrationCode === user.registration_code
-                )!
-              );
-            }
+                    userRegistrationCode === userData.registration_code
+                )
+              ) {
+                setRegistrationCode(
+                  item.user_registration_code.find(
+                    (userRegistrationCode) =>
+                      userRegistrationCode === userData.registration_code
+                  )!
+                );
+              }
 
-            if (
-              item.user_phone_number.find(
-                (userPhoneNumber) => userPhoneNumber === user.phone
-              )
-            ) {
-              setPhone(
+              if (
                 item.user_phone_number.find(
-                  (userPhoneNumber) => userPhoneNumber === user.phone
-                )!
-              );
-            }
+                  (userPhoneNumber) => userPhoneNumber === userData.phone
+                )
+              ) {
+                setPhone(
+                  item.user_phone_number.find(
+                    (userPhoneNumber) => userPhoneNumber === userData.phone
+                  )!
+                );
+              }
 
-            if (item.user_email.find((userEmail) => userEmail === user.email)) {
-              setEmail(
-                item.user_email.find((userEmail) => userEmail === user.email)!
-              );
+              if (
+                item.user_email.find(
+                  (userEmail) => userEmail === userData.email
+                )
+              ) {
+                setEmail(
+                  item.user_email.find(
+                    (userEmail) => userEmail === userData.email
+                  )!
+                );
+              }
             }
-          }
+          });
+        })
+        .catch(() => {
+          setError(true);
         });
-      })
-      .catch(() => {
-        setError(true);
-      });
+    }
   };
 
   useEffect(() => {

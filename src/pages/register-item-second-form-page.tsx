@@ -102,29 +102,27 @@ export default function RegisterItemSecondFormPage() {
 
   const getLostAndFound = async () => {
     // const user = JSON.parse(getCookie('@lost-and-link:user')!);
-    const user = JSON.parse(
-      getCookie('@lost-and-link:user') as unknown as string
-    );
-    // console.log(user.id);
+    const user = getCookie('@lost-and-link:user') as unknown as string;
 
-    await getDocs(
-      query(
-        collection(db, 'lost_and_found'),
-        where('user_id', 'array-contains', user.id),
-        limit(5)
-      )
-    ).then((querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => ({
-        // console.log(doc.id, ' => ', doc.data());
-        ...doc.data(),
-      }));
+    if (user) {
+      const userData = JSON.parse(user);
+      await getDocs(
+        query(
+          collection(db, 'lost_and_found'),
+          where('user_id', 'array-contains', userData.id),
+          limit(5)
+        )
+      ).then((querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => ({
+          // console.log(doc.id, ' => ', doc.data());
+          ...doc.data(),
+        }));
 
-      console.log(data);
-
-      data.map((item) => {
-        setLostAndFound([...lostAndFound, item]);
+        data.map((item) => {
+          setLostAndFound([...lostAndFound, item]);
+        });
       });
-    });
+    }
   };
 
   useEffect(() => {

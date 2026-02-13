@@ -17,61 +17,69 @@ export default function ActivityPage() {
   const [lostAndFound, setLostAndFound] = useState<any>([]);
 
   // const user = JSON.parse(getCookie('@lost-and-link:user')!);
-  const user = JSON.parse(
-    getCookie('@lost-and-link:user') as unknown as string
-  );
+  const user = getCookie('@lost-and-link:user') as unknown as string;
 
   const getItems = async () => {
-    await getDocs(
-      query(
-        collection(db, 'register_item'),
-        where('request', '==', user.id),
-        limit(1)
-      )
-    ).then((querySnapshot) => {
-      const data = querySnapshot.docs.map((doc: any) => ({
-        ...doc.data(),
-      }));
+    if (user) {
+      const userData = JSON.parse(user);
+      await getDocs(
+        query(
+          collection(db, 'register_item'),
+          where('request', '==', userData.id),
+          limit(1)
+        )
+      ).then((querySnapshot) => {
+        const data = querySnapshot.docs.map((doc: any) => ({
+          ...doc.data(),
+        }));
 
-      data.map((item) => {
-        setItems([...items, item]);
+        data.map((item) => {
+          setItems([...items, item]);
+        });
       });
-    });
+    }
   };
 
   const getPostedItem = async () => {
-    await getDocs(
-      query(
-        collection(db, 'register_item'),
-        where('user_id', '==', user.id),
-        limit(1)
-      )
-    ).then((querySnapshot) => {
-      const data = querySnapshot.docs.map((doc: any) => ({
-        ...doc.data(),
-      }));
+    if (user) {
+      const userData = JSON.parse(user);
+      await getDocs(
+        query(
+          collection(db, 'register_item'),
+          where('user_id', '==', userData.id),
+          limit(1)
+        )
+      ).then((querySnapshot) => {
+        const data = querySnapshot.docs.map((doc: any) => ({
+          ...doc.data(),
+        }));
 
-      data.map((item) => {
-        setPostedItem([...postedItem, item]);
+        data.map((item) => {
+          setPostedItem([...postedItem, item]);
+        });
       });
-    });
+    }
   };
 
   const getLostAndFound = async () => {
-    await getDocs(
-      query(
-        collection(db, 'lost_and_found'),
-        where('is_admin', 'array-contains', user.id)
-      )
-    ).then((querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-      }));
+    if (user) {
+      const userData = JSON.parse(user);
 
-      data.map((item: any) => {
-        setLostAndFound([...lostAndFound, item]);
+      await getDocs(
+        query(
+          collection(db, 'lost_and_found'),
+          where('is_admin', 'array-contains', userData.id)
+        )
+      ).then((querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+        }));
+
+        data.map((item: any) => {
+          setLostAndFound([...lostAndFound, item]);
+        });
       });
-    });
+    }
   };
 
   const getAdminItems = async () => {

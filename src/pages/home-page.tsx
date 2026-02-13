@@ -34,9 +34,7 @@ export default function HomePage() {
   const foundItem = items && items.some((item) => item.item_found === true);
 
   // const user = JSON.parse(getCookie('@lost-and-link:user')!);
-  const user = JSON.parse(
-    getCookie('@lost-and-link:user') as unknown as string
-  );
+  const user = getCookie('@lost-and-link:user') as unknown as string;
 
   const auth = getAuth();
 
@@ -76,25 +74,28 @@ export default function HomePage() {
   };
 
   const getItems = async () => {
-    lostAndFound.map(async (place: LostAndFoundType) => {
-      if (place.user_id.find((id) => id === user.id)) {
-        await getDocs(
-          query(
-            collection(db, 'register_item'),
-            where('lost_and_found_location', '==', place.location),
-            limit(5)
-          )
-        ).then((querySnapshot) => {
-          const data = querySnapshot.docs.map((doc: any) => ({
-            ...doc.data(),
-          }));
+    if (user) {
+      const userData = JSON.parse(user);
+      lostAndFound.map(async (place: LostAndFoundType) => {
+        if (place.user_id.find((id) => id === userData.id)) {
+          await getDocs(
+            query(
+              collection(db, 'register_item'),
+              where('lost_and_found_location', '==', place.location),
+              limit(5)
+            )
+          ).then((querySnapshot) => {
+            const data = querySnapshot.docs.map((doc: any) => ({
+              ...doc.data(),
+            }));
 
-          data.map((item) => {
-            setItems([...items, item]);
+            data.map((item) => {
+              setItems([...items, item]);
+            });
           });
-        });
-      }
-    });
+        }
+      });
+    }
   };
 
   useEffect(() => {
@@ -148,11 +149,11 @@ export default function HomePage() {
           </Link>
         ))}
 
-      {receivedNotification && (
+      {/* {receivedNotification && (
         <Notification
           itemName={items.find((item) => item.request === user.id)!.name}
         />
-      )}
+      )} */}
 
       {foundItem !== undefined && foundItem === false && items.length !== 0 && (
         <>

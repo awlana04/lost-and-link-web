@@ -41,9 +41,7 @@ export default function ViewItemPage() {
   const itemId = searchParams?.get('item');
 
   // const user = JSON.parse(getCookie('@lost-and-link:user')!);
-  const user = JSON.parse(
-    getCookie('@lost-and-link:user') as unknown as string
-  );
+  const user = getCookie('@lost-and-link:user') as unknown as string;
 
   const getItem = async () => {
     await getDocs(
@@ -122,13 +120,16 @@ export default function ViewItemPage() {
       where('user_id', '==', itemId)
     );
 
-    (await getDocs(q)).forEach(async (document) => {
-      const docRef = document.ref;
+    if (user) {
+      const userData = JSON.parse(user);
+      (await getDocs(q)).forEach(async (document) => {
+        const docRef = document.ref;
 
-      await updateDoc(docRef, {
-        request: user.id,
+        await updateDoc(docRef, {
+          request: userData.id,
+        });
       });
-    });
+    }
 
     router.push('/dashboard');
   };
