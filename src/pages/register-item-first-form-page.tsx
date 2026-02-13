@@ -110,9 +110,9 @@ export default function RegisterItemFirstFormPage() {
         text='Tipo de Item'
       />
 
-      <div className='items-center my-6 mb-6 justify-center flex'>
+      <div className='items-center my-6 mb-6 justify-center flex flex-col'>
         {objectSelected && (
-          <div className='bg-lightGreen w-48 h-16 p-2 items-center rounded-2xl flex-row pl-4 mb-4'>
+          <div className='bg-lightGreen w-48 h-16 p-2 items-center rounded-2xl flex-row flex pl-4 mb-4'>
             <Icon color='black' icon={FiCheck} size='small' />
 
             <p className='text-black ml-2'>
@@ -138,11 +138,14 @@ export default function RegisterItemFirstFormPage() {
       </div>
 
       {isListDropdown && (
-        <div className='z-40 absolute w-full h-full'>
+        <div className='translate-x-[-50%] fixed left-[50%] z-100 w-full h-full'>
           <div className='opacity-80 bg-black w-full h-full absolute' />
 
-          <div className='z-50 bg-white absolute mt-56 justify-center self-center items-center flex flex-auto w-60 h-72 opacity-100 rounded-2xl'>
-            <button onClick={() => setIsListDropdown(false)}>
+          <div className='z-50 bg-white left-[45%] absolute mt-56 justify-center self-center items-center flex flex-auto w-72 h-1/2 opacity-100 rounded-2xl'>
+            <button
+              onClick={() => setIsListDropdown(false)}
+              className='cursor-pointer'
+            >
               <Icon color='green' size='large' icon={FiX} />
             </button>
 

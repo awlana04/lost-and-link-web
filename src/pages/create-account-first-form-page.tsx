@@ -57,6 +57,7 @@ export default function CreateAccountFirstFormPage() {
           displayName: data.name,
         }).finally(async () => {
           const user = {
+            id: e.user.uid,
             name: e.user.displayName,
             email: e.user.email,
           };

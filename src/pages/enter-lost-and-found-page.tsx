@@ -69,8 +69,6 @@ export default function EnterLostAndFoundPage() {
             ...doc.data(),
           })) as unknown as LostAndFoundType[];
 
-          console.log(data);
-
           data.map((item) => {
             if (item.user_name.find((userName) => userName === userData.name)) {
               setName(
@@ -153,21 +151,27 @@ export default function EnterLostAndFoundPage() {
     }
 
     if (enterError !== true) {
-      const q = await query(
-        collection(db, 'lost_and_found'),
-        where('location', '==', locationId),
-        limit(1)
-      );
+      if (user) {
+        const userData = JSON.parse(user);
 
-      (await getDocs(q)).forEach(async (document) => {
-        const docRef = document.ref;
+        const q = await getDocs(
+          query(
+            collection(db, 'lost_and_found'),
+            where('location', '==', locationId),
+            limit(1)
+          )
+        );
 
-        await updateDoc(docRef, {
-          user_id: arrayUnion(user.id),
-        }).finally(() => {
-          router.push('/dashboard');
+        q.forEach(async (document) => {
+          const docRef = document.ref;
+
+          await updateDoc(docRef, {
+            user_id: arrayUnion(userData.id),
+          }).finally(() => {
+            router.push('/dashboard');
+          });
         });
-      });
+      }
     }
   };
 
