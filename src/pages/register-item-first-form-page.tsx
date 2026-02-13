@@ -7,6 +7,7 @@ import Icon from '../components/atoms/icon';
 import RadioButton from '../components/atoms/radio-button';
 import SectionTitle from '../components/molecules/section-title';
 import {
+  FiBook,
   FiCheck,
   FiChevronDown,
   FiHash,
@@ -21,13 +22,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../lib/firestore';
-import getCookie from '../utils/get-cookie';
+import { getCookie } from 'cookies-next';
+// import getCookie from '../utils/get-cookie';
 
 const schema = z.object({
   description: z
     .string()
     .min(16, 'O comentário tem que ter no mínimo 16 caracteres.')
     .nonempty('É necessário deixar um comentário.'),
+  title: z
+    .string()
+    .min(3, 'O título tem que ter no mínimo 3 caracteres.')
+    .nonempty('É necessário fornecer um título.'),
 });
 
 export default function RegisterItemFirstFormPage() {
@@ -52,7 +58,10 @@ export default function RegisterItemFirstFormPage() {
   } = useForm({ resolver: zodResolver(schema) });
 
   const handleNextStep = async (data: any) => {
-    const user = JSON.parse(getCookie('@lost-and-link:user')!);
+    // const user = JSON.parse(getCookie('@lost-and-link:user')!);
+    const user = JSON.parse(
+      getCookie('@lost-and-link:user') as unknown as string
+    );
 
     if (image) {
       const dataFile = new FormData();
@@ -64,7 +73,6 @@ export default function RegisterItemFirstFormPage() {
         body: dataFile,
       });
       const signedUrl = await uploadRequest.json();
-      console.log(signedUrl.id, signedUrl.name, signedUrl);
 
       await addDoc(collection(db, 'register_item'), {
         name: user.name,
@@ -75,6 +83,7 @@ export default function RegisterItemFirstFormPage() {
         location: '',
         user_id: user.id,
         lost_and_found_location: '',
+        title: data.title,
         request: '',
       }).then((document) => {
         router.push(`/register-item/second-form?document=${document.id}`);
@@ -100,7 +109,7 @@ export default function RegisterItemFirstFormPage() {
         text='Tipo de Item'
       />
 
-      <div className='items-center my-2 mb-4 justify-center flex'>
+      <div className='items-center my-6 mb-6 justify-center flex'>
         {objectSelected && (
           <div className='bg-lightGreen w-48 h-16 p-2 items-center rounded-2xl flex-row pl-4 mb-4'>
             <Icon color='black' icon={FiCheck} size='small' />
@@ -121,7 +130,9 @@ export default function RegisterItemFirstFormPage() {
         )}
 
         <button onClick={() => setIsListDropdown(true)}>
-          <p className='text-darkGreen'>Selecionar</p>
+          <p className='text-darkGreen cursor-pointer font-mono text-2xl font-medium'>
+            Selecionar
+          </p>
         </button>
       </div>
 
@@ -235,18 +246,34 @@ export default function RegisterItemFirstFormPage() {
         </div>
       )}
 
-      <SectionTitle
-        iconDirection='left'
-        color='blackDarkGreen'
-        icon={FiHash}
-        text='Comente Algo'
-      />
-
       <form onSubmit={handleSubmit(handleNextStep)}>
-        <div className='items-center my-2 mb-4 flex justify-center'>
+        <SectionTitle
+          iconDirection='left'
+          color='blackDarkGreen'
+          icon={FiBook}
+          text='Título'
+        />
+
+        <div className='items-center my-6 mb-6 flex justify-center'>
+          <input
+            type='text'
+            {...register('title')}
+            placeholder='Ex.: Achado hoje'
+            className='w-xl h-16 border resize-none rounded-2xl align-top border-darkGreen text-black px-4'
+          />
+        </div>
+
+        <SectionTitle
+          iconDirection='left'
+          color='blackDarkGreen'
+          icon={FiHash}
+          text='Comente Algo'
+        />
+
+        <div className='items-center my-6 mb-6 flex justify-center'>
           <textarea
             placeholder='Comente aqui.'
-            className='w-96 h-24 border rounded-2xl align-top border-darkGreen text-black px-4'
+            className='w-xl h-36 border resize-none rounded-2xl align-top border-darkGreen text-black px-4'
             {...register('description')}
           />
         </div>
@@ -257,16 +284,20 @@ export default function RegisterItemFirstFormPage() {
           icon={FiImage}
           text='Fotos'
         />
-        <div className='items-center my-2 mb-4 flex justify-center'>
-          {/* <input
+        <div className='items-center my-6 mb-4 flex justify-center'>
+          <input
             type='file'
+            id='image'
             onChange={handleChange}
-            className='w-20 h-20 rounded-2xl bg-lightGreen justify-center items-center'
-          /> */}
+            className='hidden'
+          />
 
-          <div className='w-20 h-20 rounded-2xl bg-lightGreen justify-center items-center flex'>
+          <label
+            htmlFor='image'
+            className='w-20 h-20 rounded-2xl bg-lightGreen justify-center items-center flex cursor-pointer'
+          >
             <Icon color='green' size='large' icon={FiPlus} />
-          </div>
+          </label>
         </div>
         {/* <SectionTitle
         iconDirection='left'

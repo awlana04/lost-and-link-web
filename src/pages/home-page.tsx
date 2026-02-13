@@ -7,7 +7,7 @@ import LoadMore from '../components/atoms/load-more';
 import SearchBar from '../components/molecules/search-bar';
 import SectionTitle from '../components/molecules/section-title';
 import TabBar from '../components/molecules/tab-bar';
-import getCookie from '../utils/get-cookie';
+// import getCookie from '../utils/get-cookie';
 import {
   collection,
   getDocs,
@@ -21,51 +21,79 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ItemsType } from '../types/items-type';
 import Notification from '../components/atoms/notification';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getCookie } from 'cookies-next';
+import { LostAndFoundType } from '../types/lost-and-found-type';
 
 export default function HomePage() {
   const [lostAndFound, setLostAndFound] = useState<any>([]);
   const [items, setItems] = useState<ItemsType[]>([]);
   const [receivedNotification, setReceivedNotification] = useState(false);
+  const [error, setError] = useState(false);
 
   const foundItem = items && items.some((item) => item.item_found === true);
 
-  const user = JSON.parse(getCookie('@lost-and-link:user')!);
+  // const user = JSON.parse(getCookie('@lost-and-link:user')!);
+  const user = JSON.parse(
+    getCookie('@lost-and-link:user') as unknown as string
+  );
+
+  const auth = getAuth();
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user?.emailVerified) {
+      setError(true);
+    }
+  });
 
   const getLostAndFound = async () => {
-    await getDocs(
-      query(
-        collection(db, 'lost_and_found'),
-        where('user_id', 'array-contains', user.id),
-        limit(5)
-      )
-    ).then((querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-      }));
-
-      data.map((item: any) => {
-        setLostAndFound([...lostAndFound, item]);
-      });
-    });
-  };
-
-  const getItems = async () => {
-    lostAndFound.map(async (place: any) => {
-      await getDocs(
-        query(
-          collection(db, 'register_item'),
-          where('lost_and_found_location', '==', place.location),
-          limit(5)
-        )
-      ).then((querySnapshot) => {
-        const data = querySnapshot.docs.map((doc: any) => ({
+    await getDocs(query(collection(db, 'lost_and_found'), limit(5))).then(
+      (querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => ({
           ...doc.data(),
         }));
 
-        data.map((item) => {
-          setItems([...items, item]);
+        data.map((item: any) => {
+          setLostAndFound([...lostAndFound, item]);
         });
-      });
+      }
+    );
+    // await getDocs(
+    //   query(
+    //     collection(db, 'lost_and_found'),
+    //     where('user_id', 'array-contains', user.id),
+    //     limit(5)
+    //   )
+    // ).then((querySnapshot) => {
+    //   const data = querySnapshot.docs.map((doc) => ({
+    //     ...doc.data(),
+    //   }));
+
+    //   data.map((item: any) => {
+    //     setLostAndFound([...lostAndFound, item]);
+    //   });
+    // });
+  };
+
+  const getItems = async () => {
+    lostAndFound.map(async (place: LostAndFoundType) => {
+      if (place.user_id.find((id) => id === user.id)) {
+        await getDocs(
+          query(
+            collection(db, 'register_item'),
+            where('lost_and_found_location', '==', place.location),
+            limit(5)
+          )
+        ).then((querySnapshot) => {
+          const data = querySnapshot.docs.map((doc: any) => ({
+            ...doc.data(),
+          }));
+
+          data.map((item) => {
+            setItems([...items, item]);
+          });
+        });
+      }
     });
   };
 
@@ -100,10 +128,15 @@ export default function HomePage() {
         <SearchBar />
       </div>
 
+      {error && <p>Você precisa verificar o seu email!</p>}
+
       {lostAndFound &&
-        !items &&
+        items.length === 0 &&
         lostAndFound.map((item: any) => (
-          <div key={item.name}>
+          <Link
+            href={`/enter-lost-and-found?location=${item.location}`}
+            key={item.name}
+          >
             <SectionTitle
               color='darkGreen'
               icon={FiMapPin}
@@ -111,8 +144,8 @@ export default function HomePage() {
               text='Achados e Perdidos'
             />
 
-            <Card title={item.name} description='' imageUrl='' />
-          </div>
+            <Card title={item.name} description='' imageUrl={item.image} />
+          </Link>
         ))}
 
       {receivedNotification && (
@@ -121,7 +154,7 @@ export default function HomePage() {
         />
       )}
 
-      {foundItem !== undefined && foundItem === false && (
+      {foundItem !== undefined && foundItem === false && items.length !== 0 && (
         <>
           <SectionTitle
             color='darkGreen'
@@ -140,7 +173,7 @@ export default function HomePage() {
                     key={item.name}
                   >
                     <Card
-                      title={item.name}
+                      title={item.title}
                       description={item.description}
                       imageUrl={item.image}
                     />
@@ -169,7 +202,7 @@ export default function HomePage() {
                     key={item.name}
                   >
                     <Card
-                      title={item.name}
+                      title={item.title}
                       description={item.description}
                       imageUrl={item.image}
                     />

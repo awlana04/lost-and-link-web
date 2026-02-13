@@ -6,6 +6,7 @@ import { FiKey, FiMail } from 'react-icons/fi';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { deleteCookie, setCookie } from 'cookies-next';
 
 import { app } from '../lib/firebase';
 
@@ -32,8 +33,6 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm({ resolver: zodResolver(schema) });
 
-  console.log(errors.password);
-
   const handleNextStep = async (data: any) => {
     const auth = getAuth(app);
 
@@ -48,8 +47,12 @@ export default function LoginPage() {
         await e.user
           .getIdToken()
           .then((token) => {
-            document.cookie = `@lost-and-link:token=${token}`;
-            document.cookie = `@lost-and-link:user=${JSON.stringify(user)}`;
+            deleteCookie('@lost-and-link:token');
+            deleteCookie('@lost-and-link:user');
+            setCookie('@lost-and-link:token', token);
+            setCookie('@lost-and-link:user', JSON.stringify(user));
+            // document.cookie = `@lost-and-link:token=${token}`;
+            // document.cookie = `@lost-and-link:user=${JSON.stringify(user)}`;
           })
           .finally(() => {
             router.push('/dashboard');

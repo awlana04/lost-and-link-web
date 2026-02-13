@@ -6,7 +6,7 @@ type CardType = {
 
 export default function Card(props: CardType) {
   return (
-    <div className='w-xl h-32 rounded-2xl flex flex-row items-center bg-lightGreen my-4'>
+    <div className='w-xl h-32 rounded-2xl flex flex-row items-center bg-lightGreen my-4 cursor-pointer'>
       {props.imageUrl && (
         <img src={props.imageUrl} className='w-32 h-32 rounded-2xl' />
       )}

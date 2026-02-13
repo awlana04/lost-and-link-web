@@ -26,7 +26,8 @@ import { fromLonLat, transform } from 'ol/proj';
 import { Point } from 'ol/geom';
 import Style from 'ol/style/Style';
 import Icon from 'ol/style/Icon';
-import getCookie from '../utils/get-cookie';
+import { getCookie } from 'cookies-next';
+// import getCookie from '../utils/get-cookie';
 
 export default function ViewItemPage() {
   const searchParams = useSearchParams();
@@ -39,7 +40,10 @@ export default function ViewItemPage() {
 
   const itemId = searchParams?.get('item');
 
-  const user = JSON.parse(getCookie('@lost-and-link:user')!);
+  // const user = JSON.parse(getCookie('@lost-and-link:user')!);
+  const user = JSON.parse(
+    getCookie('@lost-and-link:user') as unknown as string
+  );
 
   const getItem = async () => {
     await getDocs(
@@ -53,8 +57,6 @@ export default function ViewItemPage() {
         ...doc.data(),
       }));
 
-      console.log(data);
-
       setItem(data[0]);
     });
   };
@@ -64,7 +66,6 @@ export default function ViewItemPage() {
   }, []);
 
   useEffect(() => {
-    console.log(item);
     const map = new Map({
       target: locationRef.current, // Set the map's target to the ref
       layers: [
@@ -148,10 +149,10 @@ export default function ViewItemPage() {
               </div>
 
               <div className='mt-16'>
-                <Tag type={item.item_type} />
+                {/* <Tag type={item.item_type} /> */}
 
                 <p className='text-black text-5xl mt-10 my-6 font-mono font-black'>
-                  {item.item_type}
+                  {item.title}
                 </p>
                 <p className='text-black text-2xl font-sans text-justify'>
                   {item.description}

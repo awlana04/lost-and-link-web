@@ -21,7 +21,7 @@ export default function SectionTitle(props: SectionProps) {
         />
       )}
       <p
-        className={`text-2xl ml-4 ${props.color === 'darkGreen' ? 'text-white' : 'text-black'}`}
+        className={`text-2xl font-mono font-bold ml-4 ${props.color === 'darkGreen' ? 'text-white' : 'text-black'}`}
       >
         {props.text}
       </p>

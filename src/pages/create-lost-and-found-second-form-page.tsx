@@ -18,7 +18,12 @@ export default function CreateLostAndFoundSecondFormPage() {
   const phone_number = searchParams?.getAll('phone_number');
   const registration_code = searchParams?.getAll('registration_code');
 
-  let usersArray: any = [];
+  let usersArray: {
+    user_name: string;
+    user_email: string;
+    user_phone_number: string;
+    user_registration_code: string;
+  }[] = [];
 
   if (name && email && phone_number && registration_code) {
     for (let i = 0; i < name.length; i++) {
@@ -32,6 +37,10 @@ export default function CreateLostAndFoundSecondFormPage() {
       usersArray = [...usersArray, object];
     }
   }
+
+  const excludeMember = (name: string) => {
+    usersArray = usersArray.filter((user) => user.user_name !== name);
+  };
 
   const handleNextStep = async () => {
     if (document) {
@@ -54,17 +63,28 @@ export default function CreateLostAndFoundSecondFormPage() {
 
       <div className='mt-8'>
         {usersArray.map((item: any) => (
-          <UserCard
-            key={item.user_name}
-            userName={item.user_name}
-            userEmail={item.user_email}
-            userPhoneNumber={item.user_phone_number}
-            userRegistrationCode={item.user_registration_code}
-          />
+          <div className='flex flex-row gap-12' key={item.name}>
+            <UserCard
+              key={item.user_name}
+              userName={item.user_name}
+              userEmail={item.user_email}
+              userPhoneNumber={item.user_phone_number}
+              userRegistrationCode={item.user_registration_code}
+            />
+
+            <div className='flex flex-col gap-2 justify-center items-center'>
+              <button
+                className='bg-red-500 font-mono text-xl p-4 rounded-2xl cursor-pointer'
+                onClick={() => excludeMember(item.user_name)}
+              >
+                Excluir
+              </button>
+            </div>
+          </div>
         ))}
       </div>
 
-      <div className='mt-8'>
+      <div className='mt-10'>
         <Button text='Confirmar Integrantes' onClick={handleNextStep} />
       </div>
     </div>

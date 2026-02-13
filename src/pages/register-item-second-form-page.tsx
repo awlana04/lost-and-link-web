@@ -12,7 +12,7 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import Card from '../components/atoms/card';
 import { db } from '../lib/firestore';
-import getCookie from '../utils/get-cookie';
+// import getCookie from '../utils/get-cookie';
 import Button from '../components/atoms/button';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Feature, View } from 'ol';
@@ -27,6 +27,7 @@ import Style from 'ol/style/Style';
 import Icon from 'ol/style/Icon';
 import transformLocationLonLat from '../utils/transform-location';
 import ScreenTitle from '../components/molecules/screen-title';
+import { getCookie } from 'cookies-next';
 
 export default function RegisterItemSecondFormPage() {
   const [lostAndFound, setLostAndFound] = useState<any>([]);
@@ -100,7 +101,10 @@ export default function RegisterItemSecondFormPage() {
   }, [location]);
 
   const getLostAndFound = async () => {
-    const user = JSON.parse(getCookie('@lost-and-link:user')!);
+    // const user = JSON.parse(getCookie('@lost-and-link:user')!);
+    const user = JSON.parse(
+      getCookie('@lost-and-link:user') as unknown as string
+    );
     // console.log(user.id);
 
     await getDocs(
@@ -133,7 +137,7 @@ export default function RegisterItemSecondFormPage() {
         lost_and_found_location: lostAndFoundSelected,
         location: transformLocationLonLat(pinLocation),
       }).finally(() => {
-        Router.push('/');
+        Router.push('/dashboard');
       });
     }
   };

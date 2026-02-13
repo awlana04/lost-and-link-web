@@ -8,4 +8,5 @@ export type ItemsType = {
   user_id: string;
   image: string;
   item_found: boolean;
+  title: string;
 };

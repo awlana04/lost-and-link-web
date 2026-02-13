@@ -92,7 +92,7 @@ export default function CreateLostAndFoundThirdFormPage() {
       await updateDoc(doc(db, 'lost_and_found', document), {
         location: transformLocationLonLat(location),
       }).finally(() => {
-        Router.push('/');
+        Router.push('/dashboard');
       });
     }
   };

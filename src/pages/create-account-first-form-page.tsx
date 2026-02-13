@@ -17,6 +17,7 @@ import { app } from '../lib/firebase';
 import Button from '@/src/components/atoms/button';
 import Label from '@/src/components/molecules/label';
 import ScreenTitle from '@/src/components/molecules/screen-title';
+import { deleteCookie, setCookie } from 'cookies-next';
 
 const schema = z
   .object({
@@ -61,8 +62,12 @@ export default function CreateAccountFirstFormPage() {
           };
 
           await e.user.getIdToken().then((token) => {
-            document.cookie = `@lost-and-link:token=${token}`;
-            document.cookie = `@lost-and-link:user=${JSON.stringify(user)}`;
+            // document.cookie = `@lost-and-link:token=${token}`;
+            // document.cookie = `@lost-and-link:user=${JSON.stringify(user)}`;
+            deleteCookie('@lost-and-link:token');
+            deleteCookie('@lost-and-link:user');
+            setCookie('@lost-and-link:token', token);
+            setCookie('@lost-and-link:user', JSON.stringify(user));
           });
 
           await sendEmailVerification(e.user);
@@ -78,7 +83,7 @@ export default function CreateAccountFirstFormPage() {
         console.error(error);
       })
       .finally(() => {
-        router.push('/second-form');
+        router.push('/signin/second-form');
       });
   };
 
